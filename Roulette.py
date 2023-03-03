@@ -14,8 +14,73 @@ class Spot:
     def get_color(self):
         return self.color
     
+    def get_color_string(self):
+        colors = ['red', 'black', 'green']
+        return colors[self.color]
+    
     def get_numColor(self):
         return str(self.number) + ' ' + str(self.color)
+
+class Bet:
+    # Bet Types: 
+        # Name - Payout - Odds(Optional)
+        # 1:1 pays your bet
+        # 2:1 doubles your bet
+
+        # Outside Bets (bets made on the perimeter)
+            # Red/Black
+                # Red - 1:1 - <0.5          betting on red numbers
+                # Black - 1:1 - <0.5        betting on black number
+            # Odd/Even
+                # Odd - 1:1 - <0.5          betting on odd numbers 1-35
+                # Even - 1:1 - <0.5         betting on even numbers 2-36
+            # Low/High 
+                # Low -  - 1:1              betting on numbers 1-18
+                # High -  - 1:1             betting on numbers 19-36
+            # Columns
+                # Column1 - 2:1             betting on numbers [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+                # Column2 - 2:1             betting on numbers [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
+                # Column3 - 2:1             betting on numbers [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
+            # Dozens
+                # 1st 12 - 2:1              betting on numbers 1-12
+                # 2nd 12 - 2:1              betting on numbers 13-24
+                # 3rd 12 - 2:1              betting on numbers 25-36
+
+        # Inside Bets (bets made inside the rectangle)
+            # Straight Up - 35:1            betting on any one number
+            # Split - 17:1                  betting on any two numbers that are adjacent
+            # Street - 11:1                 betting on any row of numbers
+            # Corner - 8:1                  betting on four numbers that all share a common corner
+            # Line - 5:1                    covering two rows that are adjacent
+            # Top-Line - 6:1 - 13.16%       betting on 0,00,1,2,3 also called 5-number
+            # Basket - 6:1                  betting on 0,1,2,3 also called first four
+            # Snake Bet - 2:1               betting on 1,5,9,12,14,16,19,23,27,30,32,34
+            
+
+
+    def __init__(self, type, amount):
+        self.type = type
+        self.amount = amount
+
+    def get_Amount(self):
+        return self.amount
+    
+    def _set_Amount(self, amount):
+        self.amount = amount
+
+    def up_Bet(self, amount):
+        x = self.get_Amount() + amount
+        if x > 0:
+            self._set_Amount(x)
+        else:
+            print("Bet cannot be less than 0")
+
+    def down_Bet(self, amount):
+        x = self.get_Amount() - amount
+        if x > 0:
+            self._set_Amount(x)
+        else:
+            print("Bet cannot be less than 0")
 
 class Roulette:
     red = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
@@ -25,6 +90,9 @@ class Roulette:
         self.seed = seed
         np.random.seed(seed)
         self.setup_wheel()
+        # defaults
+        lastSpot = None
+        self.bets = []
 
     def setup_wheel(self):
         temp = []
@@ -35,8 +103,9 @@ class Roulette:
         self.wheel = temp
 
     def spin(self):
-        num = self._get_spin_number()
-        return num
+        spot = self._get_spin_number()
+        self.lastSpot = spot
+        return spot
 
     def bet(self):
         pass
@@ -46,11 +115,9 @@ class Roulette:
 
     def _get_spin_number(self):
         return np.random.choice(self.wheel)
-    
-    def _color_to_string(self, num):
-        colors = ['red', 'black', 'green']
-        return colors[num]
 
 
 r = Roulette()
-print(r.spin().get_numColor())
+# for i in range(3000):
+#     x = r.spin()
+#     print(f'Spin {i+1}: {str(x.get_color_string())} {x.get_num()}')
