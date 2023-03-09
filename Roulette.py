@@ -55,12 +55,18 @@ class Bet:
             # Top-Line - 6:1 - 13.16%       betting on 0,00,1,2,3 also called 5-number
             # Basket - 6:1                  betting on 0,1,2,3 also called first four
             # Snake Bet - 2:1               betting on 1,5,9,12,14,16,19,23,27,30,32,34
-            
 
 
-    def __init__(self, type, amount):
-        self.type = type
-        self.amount = amount
+    def __init__(self, amount, bet_type, options=None):
+        self.amount = 0
+        self.options = None
+
+        # check and set bet type
+        self.bet_type = self.set_type(bet_type, options)
+        assert(self.bet_type != None)
+
+        # place bet
+        self.up_Bet(amount)
 
     def get_Amount(self):
         return self.amount
@@ -81,6 +87,72 @@ class Bet:
             self._set_Amount(x)
         else:
             print("Bet cannot be less than 0")
+
+    def get_type(self):
+        return self.bet_type, self.options
+
+    def set_type(self, bet_type, options):
+        # must check that type is set properly
+        bet_type_list = ["Color", "EvenOdd", "LowHigh", "Columns", "Dozens", "Straight", "Split", "Street", "Corner", "Line", "Basket", "Snake-Bet", "Penta"]
+        if (bet_type in bet_type_list):
+            match bet_type:
+                case "Color":
+                    assert(isinstance(options, str))
+                    assert(options == "Red" or options == "Black")
+                    self.options = options
+                    return "Color"
+                case "EvenOdd":
+                    assert(isinstance(options, str))
+                    assert(options == "Even" or options == "Odd")
+                    self.options = options
+                    return "EvenOdd"
+                case "LowHigh":
+                    assert(isinstance(options, str))
+                    assert(options == "Low" or options == "High")
+                    self.options = options
+                    return "LowHigh"
+                case "Columns":
+                    assert(isinstance(options, int))
+                    assert(1<=options<=3)
+                    self.options = options
+                    return "Columns"
+                case "Dozens":
+                    assert(isinstance(options, int))
+                    assert(1<=options<=3)
+                    self.options = options
+                    return "Dozens"
+                case "Straight":
+                    assert(isinstance(options, int))
+                    # assert proper number, -1 is 00
+                    assert(-1<=options<=36)
+                    self.options = options
+                    return "Straight"
+                case "Split":
+                    assert(isinstance(options, list))
+                    assert(len(options) == 2)
+                    # make sure its a valid split, i.e. the numbers are next to each other
+                    # HERE
+                    self.options = options
+                    return "Split"
+                case "Street":
+                    assert(isinstance(options, int))
+                    assert(1<=options<=12)
+                    self.options=options
+                    return "Street"
+                case "Corner":
+                    return "Corner"
+                case "Line":
+                    return "Line"
+                case "Basket":
+                    # options don't matter in this case
+                    # betting on 0,1,2,3
+                    return "Basket"
+                case _:
+                    print("Error: This bet type is not implemented yet.")
+                    # throw error
+                    return None
+        else:
+            return None
 
 class Roulette:
     red = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
@@ -121,3 +193,6 @@ r = Roulette()
 # for i in range(3000):
 #     x = r.spin()
 #     print(f'Spin {i+1}: {str(x.get_color_string())} {x.get_num()}')
+
+# program will stop as it should when given bad bet
+b = Bet(100, "c")
