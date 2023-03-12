@@ -19,7 +19,7 @@ class Spot:
         return colors[self.color]
     
     def get_numColor(self):
-        return str(self.number) + ' ' + str(self.color)
+        return str(self.number) + ' ' + str(self.get_color_string())
 
 class Roulette:
     # American Roulette
@@ -86,7 +86,15 @@ class Roulette:
     def spin(self):
         spot = self._get_spin_number()
         self.lastSpot = spot
+        self.lastSpotNum = spot.get_num()
         return spot
+    
+    def spin_and_win(self):
+        spot = self._get_spin_number()
+        self.lastSpot = spot
+        self.lastSpotNum = spot.get_num()
+        winnings = self._determine_winnings()
+        return winnings
 
     def bet(self, amount, bet_type, options=None):
         # check if amount fits table 
@@ -95,11 +103,20 @@ class Roulette:
         try:
             b = self.Bet(self, amount, bet_type, options)
             self.bets.append(b)
+            print(f'You bet ${amount} on {bet_type} with {options} option')
         except:
             print("Bet Failure")
 
     def _determine_winnings(self):
-        pass
+        # calculate winnings
+        total_win = 0
+        for i in self.bets:
+            total_win += i.payout(self.lastSpotNum)
+        # set bets to empty
+        self.bets = []
+
+        # create winning object and return
+        return self.Winning(self.lastSpot, total_win)
 
     def _get_spin_number(self):
         return np.random.choice(self.wheel)
@@ -144,7 +161,6 @@ class Roulette:
         # endregion
 
         def __init__(self, parent, amount, bet_type, options=None):
-            pdb.set_trace()
             self.parent = parent
             self.amount = 0
             self.options = None
@@ -252,7 +268,8 @@ class Roulette:
                         assert(-1 not in options and 0 not in options)
                         # make sure its a valid split, i.e. the numbers are next to each other
                         np.sort(options)
-                        assert((options[1] - options[0]) in [1, 3], f'{options[0]} & {options[1]} not next to each other on board. Unable to split')
+                        diff = math.abs(options[1] - options[0])
+                        assert(diff == 1 or diff == 3)
                         self.options = options
                         self.payout_rate = 17
                         self.payout_numbers = options
@@ -399,11 +416,33 @@ class Roulette:
         def payout(self, num):
             if self.is_winner(num):
                 # win bet
-                return ((self.payout_rate + 1) * self.get_Amount)
+                return ((self.payout_rate + 1) * self.get_Amount())
             else:
                 # lose bet
                 return (-1 * self.get_Amount())
 
+    class Winning:
+        def __init__(self, spot, amount=0):
+            self.spot = spot
+            self.amount = amount
+        
+        def get_spot(self):
+            return self.spot
+        
+        def get_amount(self):
+            return self.amount
+        
+        def up_amount(self, am):
+            self._set_amount(self.get_amount() + am)
+        
+        def _set_amount(self, am):
+            self.amount = am
 
 r = Roulette()
+
+r.bet(10, "Straight", -1)
+
+x = r.spin_and_win()
+print(f'{x.get_spot().get_numColor()} was hit and you receive {x.get_amount()}')
+
 pdb.set_trace()
