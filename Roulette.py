@@ -8,6 +8,11 @@ class Spot:
         self.number = number
         self.color = color
 
+    def __str__(self):
+        details = 'Spot\n'
+        details += self.get_numColor() + '\n'
+        return details
+
     def get_num(self):
         return self.number
     
@@ -33,6 +38,11 @@ class Roulette:
         # defaults
         lastSpot = None
         self.bets = []
+
+    def __str__(self):
+        details = 'Roulette\n'
+        details += f'Style: {self.style}\n'
+        return details
 
     def setup_wheel(self):
         temp = []
@@ -171,6 +181,12 @@ class Roulette:
 
             # place bet
             self.up_Bet(amount)
+        
+        def __str__(self):
+            details = 'Bet\n'
+            details += 'Type:   {self.bet_type}\n'
+            details += 'Amount: {self.amount}\n'
+            return details
 
         def get_Amount(self):
             return self.amount
