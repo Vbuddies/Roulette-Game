@@ -114,8 +114,10 @@ class Roulette:
             b = self.Bet(self, amount, bet_type, options)
             self.bets.append(b)
             print(f'You bet ${amount} on {bet_type} with {options} option')
+            return amount
         except:
             print("Bet Failure")
+            return 0
 
     def _determine_winnings(self):
         # calculate winnings
@@ -460,11 +462,13 @@ class Roulette:
         def _set_amount(self, am):
             self.amount = am
 
-r = Roulette()
 
-r.bet(10, "Straight", -1)
+if __name__ == "__main__":
+    # for testing
+    r = Roulette()
 
-x = r.spin_and_win()
-print(f'{x.get_spot().get_numColor()} was hit and you receive {x.get_amount()}')
+    r.bet(25, "Dozens", 1)
+    r.bet(25, "Dozens", 2)
+    r.bet(25, "Columns", 2)
 
-pdb.set_trace()
+    pdb.set_trace()
