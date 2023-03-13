@@ -441,6 +441,12 @@ class Roulette:
         def __init__(self, spot, amount=0):
             self.spot = spot
             self.amount = amount
+
+        def __str__(self):
+            details = 'Winning\n'
+            details += f'Spot:      {self.spot}\n'
+            details += f'Amount:    {self.amount}\n'
+            return details
         
         def get_spot(self):
             return self.spot
