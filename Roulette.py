@@ -113,10 +113,10 @@ class Roulette:
         try:
             b = self.Bet(self, amount, bet_type, options)
             self.bets.append(b)
-            print(f'You bet ${amount} on {bet_type} with {options} option')
+            # print(f'You bet ${amount} on {bet_type} with {options} option')
             return amount
         except:
-            print("Bet Failure")
+            # print("Bet Failure")
             return 0
 
     def _determine_winnings(self):
